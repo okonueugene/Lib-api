@@ -17,10 +17,12 @@ class DatabaseSeeder extends Seeder
 
             UserSeeder::class,
             // BookSeeder::class,
-            // CategorySeeder::class,
+            CategorySeeder::class,
+            SubCategorySeeder::class,
             // BookLoanSeeder::class,
         ]);
         \App\Models\User::factory(100)->create();
+        \App\Models\Books::factory(100)->create();
 
     }
 }

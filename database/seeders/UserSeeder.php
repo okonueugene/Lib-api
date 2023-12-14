@@ -14,15 +14,6 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    // An admin should be able to register users, add books and manage book loans.
-    // A user should be able to borrow an available book.
-    // An admin should be able to approve the book loan and issue the book to the user.
-    // Users should be able to extend the book loan if they cannot return it within the
-    // specified return date.
-    // Otherwise, an admin should be able to receive the book back from the user.
-    // For this code challenge, think over and above.
-    // To meet your additional requirements, normalise the database further to meet your
-    // needs
 
     private $permissions = [
         'add_user',
@@ -54,14 +45,6 @@ class UserSeeder extends Seeder
         'mark_book_loan_returned',
 
     ];
-
-
-
-
-
-
-
-
 
 
     public function run(): void
@@ -117,19 +100,9 @@ class UserSeeder extends Seeder
 
         $permissions = Permission::whereIn('name', $userPermissions)->pluck('id', 'id')->all();
 
-
-
-
         $role->syncPermissions($permissions);
 
         $user->assignRole([$role->id]);
-
-
-
-
-
-
-
 
     }
 }

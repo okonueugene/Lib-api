@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\BooksController;
+use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\SubCategoryController;
 use App\Http\Controllers\Api\V1\AuthenticationController;
 
 /*
@@ -24,7 +27,10 @@ Route::prefix('/v1')->group(
         Route::group(['middleware' => ['auth:sanctum','ensure.json.header']], function () {
             Route::post('/logout', [AuthenticationController::class, 'logout']);
 
-            Route::apiResource('/users', UserController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+            Route::apiResource('/users', UserController::class);
+            Route::apiResource('/categories', CategoryController::class);
+            Route::apiResource('/subcategories', SubCategoryController::class);
+            Route::apiResource('/books', BooksController::class);
 
         });
     }

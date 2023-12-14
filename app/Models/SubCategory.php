@@ -3,29 +3,27 @@
 namespace App\Models;
 
 use App\Models\Books;
-use App\Models\SubCategory;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Category extends Model
+class SubCategory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
         'description',
+        'category_id',
     ];
 
-    public function subcategories()
+    public function category()
     {
-        return $this->hasMany(SubCategory::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function books()
     {
-        return $this->hasManyThrough(Books::class, SubCategory::class);
+        return $this->hasMany(Books::class);
     }
-
-
-
 }
