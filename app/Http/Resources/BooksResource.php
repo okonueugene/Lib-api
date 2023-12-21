@@ -14,8 +14,11 @@ class BooksResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $mediaUrl = optional($this->media->first())->original_url;
+
 
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'publisher' => $this->publisher,
             'category' => $this->category->name,
@@ -24,6 +27,8 @@ class BooksResource extends JsonResource
             'pages' => $this->pages,
             'image' => $this->image,
             'added_by' => $this->addedBy->name,
+            'updated_by' => $this->updatedBy->name ?? null,
+            'media' => $mediaUrl,
         ];
     }
 }

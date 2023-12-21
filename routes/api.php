@@ -30,12 +30,11 @@ Route::prefix('/v1')->group(
             Route::apiResource('/users', UserController::class);
             Route::apiResource('/categories', CategoryController::class);
             Route::apiResource('/subcategories', SubCategoryController::class);
+
             Route::apiResource('/books', BooksController::class);
+
+            Route::get('/books/search/{title} ', [BooksController::class, 'search']);
 
         });
     }
 );
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });

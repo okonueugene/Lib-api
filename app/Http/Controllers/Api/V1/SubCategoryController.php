@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SubCategoryResource;
 use App\Http\Requests\StoreSubCategoryRequest;
@@ -59,8 +60,15 @@ class SubCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SubCategory $subCategory)
+    public function destroy($id)
     {
-        //
+        $subCategory = SubCategory::find($id);
+        if (!$subCategory) {
+            return response()->json(['message' => 'SubCategory not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $subCategory->delete();
+
+        return response()->json(['message' => 'SubCategory deleted successfully']);
     }
 }

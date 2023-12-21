@@ -16,9 +16,9 @@ return new class () extends Migration {
             $table->string('publisher');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->foreignId('sub_category_id')->constrained('sub_categories')->onDelete('cascade');
-            $table->longText('description');
+            $table->longText('description', 500);
             $table->integer('pages');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->foreignId('added_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 

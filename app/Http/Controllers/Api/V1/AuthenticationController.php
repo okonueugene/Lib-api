@@ -22,7 +22,7 @@ class AuthenticationController extends Controller
 
         return response()->json([
             'message' => 'Successfully logged in use the token below to authenticate your requests',
-            'user' => 'Logged in as ' . Auth::user()->name,
+            'user' => auth()->user(),
             'token' => $token]);
 
     }

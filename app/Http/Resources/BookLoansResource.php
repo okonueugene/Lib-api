@@ -14,11 +14,9 @@ class BookLoansResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // [
-        //     'book_id', 'user_id', 'can_date', 'due_date', 'return_date', 'extended', 'extension_tale_cate',
-        //     'penalty_amount', 'penalty_status', 'added_by',
-        // ];
+
         return [
+            'id' => $this->id,
             'book_name' => $this->book->name,
             'borrower' => $this->user_id->name,
             'can_date' => $this->can_date,
