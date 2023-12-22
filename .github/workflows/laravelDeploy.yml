@@ -31,4 +31,4 @@ jobs:
       - name: Storage link
         run: php artisan storage:link
       - name: Migrate database
-        run: php artisan migrate:fresh --seed
+        run: php artisan migrate:fresh --seed --force
