@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\BookCopy;
 use App\Models\Category;
 use App\Models\SubCategory;
 use Spatie\MediaLibrary\HasMedia;
@@ -35,9 +36,16 @@ class Books extends Model implements HasMedia
         return $this->belongsTo(User::class, 'added_by');
     }
 
+    public function copies()
+    {
+        return $this->hasMany(BookCopy::class);
+    }
+
     public function bookLoans()
     {
         return $this->hasOne(BookLoan::class);
     }
+
+
 
 }

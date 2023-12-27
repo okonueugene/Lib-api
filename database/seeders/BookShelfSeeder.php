@@ -35,6 +35,14 @@ class BookShelfSeeder extends Seeder
                     'image' => $book[0],
                     'added_by' => 1,
                 ]);
+
+                //Create the book copies
+                \App\Models\BookCopy::create([
+                    'book_id' => $book->id,
+                    'copy_number' => random_int(10, 200),
+                    'is_available' => true,
+                ]);
+
             } else {
                 //Check if the category is fiction or non-fiction
                 $fictional = SubCategory::where('category_id', 1)->pluck('name')->toArray();
@@ -59,6 +67,13 @@ class BookShelfSeeder extends Seeder
                     'pages' => 100,
                     'image' => $book[0],
                     'added_by' => 1,
+                ]);
+
+                //Create the book copies
+                \App\Models\BookCopy::create([
+                    'book_id' => $book->id,
+                    'copy_number' => random_int(10, 200),
+                    'is_available' => true,
                 ]);
             }
         }

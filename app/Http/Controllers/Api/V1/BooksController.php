@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Books;
+use App\Models\BookCopy;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -13,10 +14,6 @@ class BooksController extends Controller
 {
     public function __construct()
     {
-        // 'add_books',
-        // 'edit_books',
-        // 'delete_books',
-        // 'view_books',
         $this->middleware('permission:add_books')->only(['store']);
         $this->middleware('permission:view_books')->only(['index', 'show']);
         $this->middleware('permission:edit_books')->only(['update']);
@@ -48,6 +45,9 @@ class BooksController extends Controller
             if ($request->hasFile('image')) {
                 $book->addMediaFromRequest('image')->toMediaCollection('book_image');
             }
+
+            // Add copies
+            $this->addCopies($request->copies, $book->id);
 
             \DB::commit();
 
@@ -116,5 +116,15 @@ class BooksController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
+    }
+
+    private function addCopies($copies, $bookId)
+    {
+        BookCopy::create([
+            'book_id' => $bookId,
+            'copy_number' => $copies,
+            'is_available' => true
+        ]);
+
     }
 }

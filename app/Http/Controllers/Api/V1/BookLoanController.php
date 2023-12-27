@@ -13,15 +13,32 @@ class BookLoanController extends Controller
      */
     public function index()
     {
-        //
+        return BookLoansResource::collection(BookLoans::all());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBookLoanRequest $request)
     {
-        //
+        $book = Books::findOrFail($request->book_id);
+
+        if ($book->copies()->available()->count() === 0) {
+            return response()->json(['message' => 'No copies available'], 400);
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $bookLoan = BookLoans::create($request->validated());
+
+            \DB::commit();
+
+            return BookLoansResource::make($bookLoan);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -29,22 +46,28 @@ class BookLoanController extends Controller
      */
     public function show(BookLoans $bookLoans)
     {
-        //
+        return BookLoansResource::make($bookLoans);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, BookLoans $bookLoans)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(BookLoans $bookLoans)
     {
-        //
+        try {
+            \DB::beginTransaction();
+
+            $bookLoans->delete();
+
+            \DB::commit();
+
+            return response()->json(['message' => 'Book loan deleted successfully']);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
+
+
 }

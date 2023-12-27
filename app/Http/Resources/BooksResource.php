@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\BookCopy;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,6 +16,7 @@ class BooksResource extends JsonResource
     public function toArray(Request $request): array
     {
         $mediaUrl = optional($this->media->first())->original_url;
+        $copies = BookCopy::where('book_id', $this->id)->pluck('copy_number')->toArray();
 
 
         return [
@@ -29,6 +31,8 @@ class BooksResource extends JsonResource
             'added_by' => $this->addedBy->name,
             'updated_by' => $this->updatedBy->name ?? null,
             'media' => $mediaUrl,
+            'copies' => (int) implode("", $copies),
+
         ];
     }
 }

@@ -29,6 +29,7 @@ class StoreBooksRequest extends FormRequest
             'description' => 'required|string|max:255',
             'pages' => 'required|integer',
             'added_by' => 'required|integer|exists:users,id',
+            'copies' => 'required|integer|min:1',
         ];
     }
 }
