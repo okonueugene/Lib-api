@@ -28,5 +28,3 @@ jobs:
         run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress --no-suggest
       - name: Clear cache
         run: php artisan optimize:clear && composer dump-autoload & php artisan config:clear && php artisan cache:clear
-      - name: Migrate database
-        run: php artisan migrate:fresh --seed --force
