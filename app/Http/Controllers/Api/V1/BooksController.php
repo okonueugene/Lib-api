@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Books;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BooksResource;
 use App\Http\Requests\StoreBooksRequest;
@@ -12,6 +13,10 @@ class BooksController extends Controller
 {
     public function __construct()
     {
+        // 'add_books',
+        // 'edit_books',
+        // 'delete_books',
+        // 'view_books',
         $this->middleware('permission:add_books')->only(['store']);
         $this->middleware('permission:view_books')->only(['index', 'show']);
         $this->middleware('permission:edit_books')->only(['update']);
