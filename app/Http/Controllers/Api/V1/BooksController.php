@@ -10,6 +10,15 @@ use App\Http\Requests\StoreBooksRequest;
 
 class BooksController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:add_books')->only(['store']);
+        $this->middleware('permission:view_books')->only(['index', 'show']);
+        $this->middleware('permission:edit_books')->only(['update']);
+        $this->middleware('permission:delete_books')->only(['destroy']);
+
+
+    }
     /**
      * Display a listing of the resource.
      */
