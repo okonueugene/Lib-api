@@ -21,15 +21,12 @@ class BooksController extends Controller
         $this->middleware('permission:view_books')->only(['index', 'show']);
         $this->middleware('permission:edit_books')->only(['update']);
         $this->middleware('permission:delete_books')->only(['destroy']);
-
-
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // return BooksResource::collection(Books::orderBy('id', 'desc')->take(350)->get());
         $books = Books::orderBy('id', 'desc')->take(500)->get();
         //load media
         $books->load('media');
