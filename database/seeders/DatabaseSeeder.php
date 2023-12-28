@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             SubCategorySeeder::class,
             // BookLoanSeeder::class,
             BookShelfSeeder::class,
-        ]);
 
+        ]);
+        \App\Models\User::factory(20)->create();
     }
 }

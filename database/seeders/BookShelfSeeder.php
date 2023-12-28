@@ -16,9 +16,10 @@ class BookShelfSeeder extends Seeder
     {
         $url = 'https://raw.githubusercontent.com/okonueugene/Lib-api/main/library.json';
         $data = json_decode(file_get_contents($url), true);
+        $descriptions = json_decode(file_get_contents('https://raw.githubusercontent.com/okonueugene/Lib-api/main/public/books.json'), true);
 
 
-
+        $index = 0;
         foreach ($data as $book) {
             //Find the subcategory
             $subcategory = SubCategory::where('name', 'like', '%' . $book[3] . '%')->first();
@@ -33,7 +34,7 @@ class BookShelfSeeder extends Seeder
                     'publisher' => $book[2],
                     'category_id' => $category_id,
                     'sub_category_id' => $subcategory_id,
-                    'description' => $this->description($book[1]),
+                    'description' => $this->getDescription($descriptions, $index),
                     'pages' => 100,
                     'image' => $book[0],
                     'added_by' => 1,
@@ -45,6 +46,8 @@ class BookShelfSeeder extends Seeder
                     'copy_number' => random_int(10, 200),
                     'is_available' => true,
                 ]);
+
+                $index++;
 
             } else {
                 //Check if the category is fiction or non-fiction
@@ -66,7 +69,7 @@ class BookShelfSeeder extends Seeder
                     'publisher' => $book[2],
                     'category_id' => 2,
                     'sub_category_id' => $subcategory->id,
-                    'description' => $this->description($book[1]),
+                    'description' => $this->getDescription($descriptions, $index),
                     'pages' => 100,
                     'image' => $book[0],
                     'added_by' => 1,
@@ -78,31 +81,22 @@ class BookShelfSeeder extends Seeder
                     'copy_number' => random_int(10, 200),
                     'is_available' => true,
                 ]);
+
+                $index++;
             }
         }
     }
 
-    // private function description($title)
-    // {
-    //     // https://www.google.com/search?q=saving+jason+%28a+jason+stafford+novel%29+description
-    //     $searchQuery = $title;
-    //     // dd(urlencode($searchQuery . " description"));
-    //     //to lower case
-    //     $searchQuery = strtolower($searchQuery);
-    //     $client = new Client();
+    private function getDescription($descriptions, $index)
+    {
+        // If the descriptions is an array and the index is within bounds
+        if (is_array($descriptions) && isset($descriptions[$index])) {
+            return $descriptions[$index];
+        }
 
-    //     $crawler = $client->request('GET', 'https://www.google.com/search?q=' . urlencode($searchQuery . 'description'));
-    //     dd($crawler);
-    //     //    Get all text in divs with class BNeawe
-    //     $description = $crawler->filter('div.BNeawe')->each(function ($node) {
-    //         return $node->text();
-    //     });
+        // If the descriptions is not an array or the index is out of bounds, return a default description
+        return 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.';
+    }
 
-    //     $description = array_slice($description, 0, 1);
 
-    //     //split by ...
-    //     // $description = explode('.', $description);
-    //     $description = array_slice($description, 0, 2);
-    //     return implode('.', $description) ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.';
-    // }
 }
