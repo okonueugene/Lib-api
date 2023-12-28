@@ -22,7 +22,7 @@ class AuthenticationController extends Controller
 
         return response()->json([
             'message' => 'Successfully logged in use the token below to authenticate your requests',
-            'user' => auth()->user(),
+            'user' => UserResource::make(Auth::user()),
             'token' => $token]);
 
     }

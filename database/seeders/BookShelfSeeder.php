@@ -102,7 +102,7 @@ class BookShelfSeeder extends Seeder
         $description = array_slice($description, 0, 1);
 
         //split by ...
-        $description = explode('.', $description[0]);
+        // $description = explode('.', $description);
         $description = array_slice($description, 0, 2);
         return implode('.', $description) ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.';
     }
