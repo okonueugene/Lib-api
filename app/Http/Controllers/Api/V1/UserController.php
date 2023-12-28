@@ -71,7 +71,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
         $user->delete();
 
 
