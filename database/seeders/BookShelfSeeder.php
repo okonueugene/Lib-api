@@ -82,28 +82,27 @@ class BookShelfSeeder extends Seeder
         }
     }
 
-    private function description($title)
-    {
-        // https://www.google.com/search?q=saving+jason+%28a+jason+stafford+novel%29+description
-        $searchQuery = $title;
-        // dd(urlencode($searchQuery . " description"));
-        //to lower case
-        $searchQuery = strtolower($searchQuery);
+    // private function description($title)
+    // {
+    //     // https://www.google.com/search?q=saving+jason+%28a+jason+stafford+novel%29+description
+    //     $searchQuery = $title;
+    //     // dd(urlencode($searchQuery . " description"));
+    //     //to lower case
+    //     $searchQuery = strtolower($searchQuery);
+    //     $client = new Client();
 
-        $client = new Client();
+    //     $crawler = $client->request('GET', 'https://www.google.com/search?q=' . urlencode($searchQuery . 'description'));
+    //     dd($crawler);
+    //     //    Get all text in divs with class BNeawe
+    //     $description = $crawler->filter('div.BNeawe')->each(function ($node) {
+    //         return $node->text();
+    //     });
 
-        $crawler = $client->request('GET', 'https://www.google.com/search?q=' . urlencode($searchQuery . 'description'));
+    //     $description = array_slice($description, 0, 1);
 
-        //    Get all text in divs with class BNeawe
-        $description = $crawler->filter('div.BNeawe')->each(function ($node) {
-            return $node->text();
-        });
-
-        $description = array_slice($description, 0, 1);
-
-        //split by ...
-        // $description = explode('.', $description);
-        $description = array_slice($description, 0, 2);
-        return implode('.', $description) ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.';
-    }
+    //     //split by ...
+    //     // $description = explode('.', $description);
+    //     $description = array_slice($description, 0, 2);
+    //     return implode('.', $description) ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.';
+    // }
 }

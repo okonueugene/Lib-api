@@ -4,7 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\BooksController;
+use App\Http\Controllers\Api\V1\RolesController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\PermissionsController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
 use App\Http\Controllers\Api\V1\AuthenticationController;
 
@@ -20,7 +22,6 @@ use App\Http\Controllers\Api\V1\AuthenticationController;
 */
 
 
-
 Route::prefix('/v1')->group(
     function () {
         Route::post('/login', [AuthenticationController::class, 'login']);
@@ -30,8 +31,9 @@ Route::prefix('/v1')->group(
             Route::apiResource('/users', UserController::class);
             Route::apiResource('/categories', CategoryController::class);
             Route::apiResource('/subcategories', SubCategoryController::class);
-
             Route::apiResource('/books', BooksController::class);
+            Route::apiResource('/roles', RolesController::class);
+            Route::apiResource('/permissions', PermissionsController::class);
 
             Route::get('/books/search/{title} ', [BooksController::class, 'search']);
 

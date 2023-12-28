@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
         'add_role',
         'delete_role',
         'view_role',
+        'edit_role',
         'add_permission',
         'edit_permission',
         'delete_permission',
