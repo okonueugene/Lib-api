@@ -14,7 +14,7 @@ class BookLoans extends Model
 
     protected $fillable = [
         'book_id', 'user_id', 'can_date', 'due_date', 'return_date', 'extended', 'extension_tale_cate',
-        'penalty_amount', 'penalty_status', 'added_by',
+        'penalty_amount', 'penalty_status', 'added_by', 'updated_by', 'status'
     ];
 
     public function book()

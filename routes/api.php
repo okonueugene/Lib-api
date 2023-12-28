@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\BooksController;
 use App\Http\Controllers\Api\V1\RolesController;
+use App\Http\Controllers\Api\V1\BookLoanController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\PermissionsController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
@@ -33,9 +34,14 @@ Route::prefix('/v1')->group(
             Route::apiResource('/subcategories', SubCategoryController::class);
             Route::apiResource('/books', BooksController::class);
             Route::apiResource('/roles', RolesController::class);
+            Route::apiResource('/bookloans', BookLoanController::class);
             Route::apiResource('/permissions', PermissionsController::class);
 
             Route::get('/books/search/{title} ', [BooksController::class, 'search']);
+            Route::post('/bookloans/return/{id}', [BookLoanController::class, 'returnBook']);
+            Route::post('/bookloans/approve/{id}', [BookLoanController::class, 'approveBookLoan']);
+            Route::post('/bookloans/reject/{id}', [BookLoanController::class, 'rejectBookLoan']);
+            Route::post('/bookloans/extend/{id}', [BookLoanController::class, 'extendBookLoan']);
 
         });
     }

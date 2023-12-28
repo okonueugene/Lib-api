@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
+use App\Models\BookCopy;
 use App\Models\BookLoans;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\BookLoansResource;
+use App\Http\Requests\StoreBookLoanRequest;
 
 class BookLoanController extends Controller
 {
@@ -13,24 +16,55 @@ class BookLoanController extends Controller
      */
     public function index()
     {
+        // Assuming you have a BookLoansResource for formatting the response
         return BookLoansResource::collection(BookLoans::all());
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created book loan in storage.
      */
     public function store(StoreBookLoanRequest $request)
     {
-        $book = Books::findOrFail($request->book_id);
+        // Check if the user has already borrowed the book
+        $existingLoan = BookLoans::where('book_id', $request->book_id)
+            ->where('user_id', $request->user_id)
+            ->whereNull('return_date')
+            ->first();
 
-        if ($book->copies()->available()->count() === 0) {
-            return response()->json(['message' => 'No copies available'], 400);
+        if ($existingLoan) {
+            return response()->json(['message' => 'You have already borrowed this book'], 400);
         }
 
         try {
             \DB::beginTransaction();
 
-            $bookLoan = BookLoans::create($request->validated());
+            // Find an available book copy
+            $bookCopy = BookCopy::where('book_id', $request->book_id)
+                ->where('is_available', true)
+                ->orderBy('copy_number', 'asc') // Order by copy number to get the lowest copy number first
+                ->first();
+
+            if (!$bookCopy) {
+                return response()->json(['message' => 'No available copies of the book'], 400);
+            }
+
+            // Decrement the copy_number
+            $bookCopy->decrement('copy_number');
+
+            // Mark the book copy as unavailable if there is only one copy remaining
+            if ($bookCopy->copy_number === 0) {
+                $bookCopy->update(['is_available' => false ,'updated_at' => now()]);
+            }
+
+            // Create the book loan
+            $bookLoan = BookLoans::create([
+                'book_id' => $request->book_id,
+                'user_id' => $request->user_id,
+                'can_date' => now(),
+                'added_by' => $request->user_id,
+                'status' => 'pending',
+
+            ]);
 
             \DB::commit();
 
@@ -41,24 +75,20 @@ class BookLoanController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(BookLoans $bookLoans)
-    {
-        return BookLoansResource::make($bookLoans);
-    }
 
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified book loan from storage.
      */
-    public function destroy(BookLoans $bookLoans)
+    public function destroy(BookLoan $bookLoan)
     {
         try {
             \DB::beginTransaction();
 
-            $bookLoans->delete();
+            // Mark the book copy as available before deleting the loan
+            $bookLoan->bookCopy->update(['is_available' => true]);
+
+            $bookLoan->delete();
 
             \DB::commit();
 
@@ -69,5 +99,139 @@ class BookLoanController extends Controller
         }
     }
 
+    /**
+     * Calculate penalty amount if the book is returned late.
+     */
+    private function calculatePenalty(BookLoan $bookLoan)
+    {
+        //50 per day after due date
+        $penaltyAmount = 0;
 
+        if ($bookLoan->due_date < now()) {
+            $daysLate = now()->diffInDays($bookLoan->due_date);
+            $penaltyAmount = $daysLate * 50;
+        }
+
+
+
+        return $penaltyAmount;
+    }
+
+    /**
+     * Approve a book loan.
+     */
+    public function approveBookLoan($bookLoan)
+    {
+        // Check if the user is an admin
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->json(['message' => 'You are not authorized to approve book loans'], 403);
+        }
+
+        try {
+            \DB::beginTransaction();
+            $bookLoan = BookLoans::findOrfail($bookLoan);
+
+            // Update the book loan status
+            $bookLoan->update(['status' => 'approved','due_date' => now()->addDays(config('library.lending_period')),'updated_at' => now(), 'updated_by' => auth()->id()]);
+
+
+            \DB::commit();
+
+            return response()->json(['message' => 'Book loan approved successfully']);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+    }
+
+    /**
+     * Extend a book loan.
+     */
+
+    public function extendBookLoan($bookLoan)
+    {
+        // Check if the book loan exists and is approved
+        $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->first();
+        if (!$bookLoan) {
+            return response()->json(['message' => 'Book loan not approved or has been returned'], 400);
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            // Update the book loan status
+            $bookLoan->update(['extended' => 'yes','updated_at' => now(), 'updated_by' => auth()->id(), 'extension_tale_cate' => $bookLoan->due_date, 'due_date' => now()->addDays(config('library.lending_period'))]);
+
+            \DB::commit();
+
+            return response()->json(['message' => 'Book loan extended successfully']);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+    }
+
+    /**
+     * Reject a book loan.
+     */
+
+    public function rejectBookLoan($bookLoan)
+    {
+        // Check if the user is an admin
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->json(['message' => 'You are not authorized to reject book loans'], 403);
+        }
+
+        try {
+            \DB::beginTransaction();
+            $bookLoan = BookLoans::findOrfail($bookLoan);
+
+            // Update the book loan status
+            $bookLoan->update(['status' => 'rejected','updated_at' => now(), 'updated_by' => auth()->id()]);
+
+            \DB::commit();
+
+            return response()->json(['message' => 'Book loan rejected successfully']);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+    }
+
+    /**
+     * Return a book loan.
+     */
+
+    public function returnBook($bookLoan)
+    {
+        try {
+            \DB::beginTransaction();
+            $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->whereNull('return_date')->first();
+
+            //if the book is not approved or not returned
+            if (!$bookLoan) {
+                return response()->json(['message' => 'Book loan not approved or has already been returned'], 400);
+            }
+
+            // Update the book loan status
+            $bookLoan->update(['status' => 'returned','updated_at' => now(), 'updated_by' => auth()->id(), 'return_date' => now()]);
+
+            //Increment the copy_number
+            $bookCopy = BookCopy::where('book_id', $bookLoan->book_id)->first();
+            $bookCopy->increment('copy_number');
+            \DB::commit();
+
+            return response()->json(['message' => 'Book loan returned successfully']);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+    }
 }

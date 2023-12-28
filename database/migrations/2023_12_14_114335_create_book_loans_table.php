@@ -18,8 +18,8 @@ return new class () extends Migration {
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->date('can_date');
-            $table->date('due_date');
+            $table->date('can_date')->nullable();
+            $table->date('due_date')->nullable();
             $table->date('return_date')
                 ->nullable();
             $table->string('extended', 3)
@@ -29,12 +29,9 @@ return new class () extends Migration {
             $table->string('penalty_amount')
                 ->nullable();
             $table->string('penalty_status', 15)->default('unpaid');
-            $table->foreignId('added_by')
-                ->constrained('users')
-                ->onDelete('cascade');
-            $table->foreignId('updated_by')
-                ->constrained('users')
-                ->onDelete('cascade');
+            $table->string('status')->default('pending');
+            $table->unsignedBigInteger('added_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

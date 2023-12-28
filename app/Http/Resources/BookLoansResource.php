@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,11 +15,13 @@ class BookLoansResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $username = User::where('id', $this->user_id)->pluck('name')->toArray();
+
 
         return [
             'id' => $this->id,
             'book_name' => $this->book->name,
-            'borrower' => $this->user_id->name,
+            'borrower' => $username[0],
             'can_date' => $this->can_date,
             'due_date' => $this->due_date,
             'return_date' => $this->return_date,
@@ -26,7 +29,8 @@ class BookLoansResource extends JsonResource
             'extension_tale_cate' => $this->extension_tale_cate,
             'penalty_amount' => $this->penalty_amount,
             'penalty_status' => $this->penalty_status,
-            'added_by' => $this->added_by->name,
+            'status' => $this->status,
+            'added_by' => $this->addedBy->name,
         ];
     }
 }
