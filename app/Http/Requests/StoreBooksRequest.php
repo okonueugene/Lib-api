@@ -26,7 +26,7 @@ class StoreBooksRequest extends FormRequest
             'publisher' => 'required|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
             'sub_category_id' => 'required|integer|exists:sub_categories,id',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string',
             'pages' => 'required|integer',
             'added_by' => 'required|integer|exists:users,id',
             'copies' => 'required|integer|min:1',

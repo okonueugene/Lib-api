@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Goutte\Client;
 use App\Models\SubCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,6 +16,8 @@ class BookShelfSeeder extends Seeder
     {
         $url = 'https://raw.githubusercontent.com/okonueugene/Lib-api/main/library.json';
         $data = json_decode(file_get_contents($url), true);
+
+
 
         foreach ($data as $book) {
             //Find the subcategory
@@ -30,7 +33,7 @@ class BookShelfSeeder extends Seeder
                     'publisher' => $book[2],
                     'category_id' => $category_id,
                     'sub_category_id' => $subcategory_id,
-                    'description' => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+                    'description' => $this->description($book[1]),
                     'pages' => 100,
                     'image' => $book[0],
                     'added_by' => 1,
@@ -63,7 +66,7 @@ class BookShelfSeeder extends Seeder
                     'publisher' => $book[2],
                     'category_id' => 2,
                     'sub_category_id' => $subcategory->id,
-                    'description' => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+                    'description' => $this->description($book[1]),
                     'pages' => 100,
                     'image' => $book[0],
                     'added_by' => 1,
@@ -77,5 +80,30 @@ class BookShelfSeeder extends Seeder
                 ]);
             }
         }
+    }
+
+    private function description($title)
+    {
+        // https://www.google.com/search?q=saving+jason+%28a+jason+stafford+novel%29+description
+        $searchQuery = $title;
+        // dd(urlencode($searchQuery . " description"));
+        //to lower case
+        $searchQuery = strtolower($searchQuery);
+
+        $client = new Client();
+
+        $crawler = $client->request('GET', 'https://www.google.com/search?q=' . urlencode($searchQuery . 'description'));
+
+        //    Get all text in divs with class BNeawe
+        $description = $crawler->filter('div.BNeawe')->each(function ($node) {
+            return $node->text();
+        });
+
+        $description = array_slice($description, 0, 1);
+
+        //split by ...
+        $description = explode('.', $description[0]);
+        $description = array_slice($description, 0, 2);
+        return implode('.', $description) ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.';
     }
 }
