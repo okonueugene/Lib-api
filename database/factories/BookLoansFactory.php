@@ -27,7 +27,7 @@ class BookLoansFactory extends Factory
             'book_id' => fake()->randomElement(Books::pluck('id')->toArray()),
             'user_id' => fake()->randomElement(User::pluck('id')->toArray()),
             'can_date' => now(),
-            'due_date' => now()->addDays(7),
+            'due_date' => fake()->dateTimeBetween('-2 days', '+10 days'),
             'return_date' => fake()->randomElement([null, now()->addDays(7), now()->addDays(14), now()->addDays(21), now()->addDays(28)]),
             'extended' => fake()->randomElement(['yes', 'no']),
             'extension_tale_cate' => $this->faker->sentence,
