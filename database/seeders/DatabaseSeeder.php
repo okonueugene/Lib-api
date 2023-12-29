@@ -24,5 +24,7 @@ class DatabaseSeeder extends Seeder
 
         ]);
         \App\Models\User::factory(20)->create();
+
+        \App\Models\BookLoans::factory(200)->create();
     }
 }
