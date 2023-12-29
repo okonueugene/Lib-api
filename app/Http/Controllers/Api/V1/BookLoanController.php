@@ -223,7 +223,6 @@ class BookLoanController extends Controller
     public function returnBook($bookLoan)
     {
         $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->where('return_date', null)->first();
-
         //if the book is not approved or not returned
         if (!$bookLoan) {
             return response()->json(['message' => 'Book loan not approved or has already been returned'], 400);
@@ -235,7 +234,8 @@ class BookLoanController extends Controller
             $bookLoan->update(['status' => 'returned','updated_at' => now(), 'updated_by' => auth()->id(), 'return_date' => now()]);
             //Increment the copy_number
             $bookCopy = BookCopy::where('book_id', $bookLoan->book_id)->first();
-            $bookCopy->increment('copy_number');
+            return response()->json(['message' => $bookCopy]);
+            // $bookCopy->increment('copy_number');
             \DB::commit();
 
             return response()->json(['message' => 'Book loan returned successfully']);
