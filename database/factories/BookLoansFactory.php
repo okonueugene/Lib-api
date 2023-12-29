@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Books;
 use App\Models\BookLoans;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,7 +24,7 @@ class BookLoansFactory extends Factory
     public function definition(): array
     {
         return [
-            'book_id' => fake()->randomElement(Book::pluck('id')->toArray()),
+            'book_id' => fake()->randomElement(Books::pluck('id')->toArray()),
             'user_id' => fake()->randomElement(User::pluck('id')->toArray()),
             'can_date' => now(),
             'due_date' => now()->addDays(7),
