@@ -58,4 +58,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(BookLoan::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            $user->addedBooks()->delete();
+            $user->bookLoans()->delete();
+        });
+    }
 }

@@ -46,6 +46,13 @@ class Books extends Model implements HasMedia
         return $this->hasOne(BookLoan::class);
     }
 
+    protected static function boot()
+    {
+        parent::boot();
 
-
+        static::deleting(function ($book) {
+            $book->copies()->delete();
+            $book->bookLoans()->delete();
+        });
+    }
 }
