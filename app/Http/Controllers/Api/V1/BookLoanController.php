@@ -137,6 +137,10 @@ class BookLoanController extends Controller
             \DB::beginTransaction();
             $bookLoan = BookLoans::findOrfail($bookLoan);
 
+            if ($bookLoan->status != 'pending') {
+                return response()->json(['message' => 'Book loan cannot be approved'], 400);
+            }
+
             // Update the book loan status
             $bookLoan->update(['status' => 'approved','due_date' => now()->addDays(config('library.lending_period')),'updated_at' => now(), 'updated_by' => auth()->id()]);
 
@@ -158,7 +162,7 @@ class BookLoanController extends Controller
     public function extendBookLoan($bookLoan)
     {
         // Check if the book loan exists and is approved
-        $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->first();
+        $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->where('extended', 'no')->first();
         if (!$bookLoan) {
             return response()->json(['message' => 'Book loan not approved or has been returned'], 400);
         }
@@ -195,6 +199,9 @@ class BookLoanController extends Controller
             \DB::beginTransaction();
             $bookLoan = BookLoans::findOrfail($bookLoan);
 
+            if ($bookLoan->status != 'pending') {
+                return response()->json(['message' => 'Book loan cannot be rejected'], 400);
+            }
             // Update the book loan status
             $bookLoan->update(['status' => 'rejected','updated_at' => now(), 'updated_by' => auth()->id()]);
 
@@ -215,18 +222,17 @@ class BookLoanController extends Controller
 
     public function returnBook($bookLoan)
     {
+        $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->where('return_date', null)->first();
+
+        //if the book is not approved or not returned
+        if (!$bookLoan) {
+            return response()->json(['message' => 'Book loan not approved or has already been returned'], 400);
+        }
+
         try {
             \DB::beginTransaction();
-            $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->whereNull('return_date')->first();
-
-            //if the book is not approved or not returned
-            if (!$bookLoan) {
-                return response()->json(['message' => 'Book loan not approved or has already been returned'], 400);
-            }
-
             // Update the book loan status
             $bookLoan->update(['status' => 'returned','updated_at' => now(), 'updated_by' => auth()->id(), 'return_date' => now()]);
-
             //Increment the copy_number
             $bookCopy = BookCopy::where('book_id', $bookLoan->book_id)->first();
             $bookCopy->increment('copy_number');
