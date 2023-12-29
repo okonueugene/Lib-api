@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Spatie\Permission\Models\Permission;
@@ -79,6 +80,6 @@ class UserController extends Controller
         $user->delete();
 
 
-        return response()->json(['message' => 'User deleted successfully'], Response::HTTP_OK);
+        return response()->json(['message' => 'User deleted successfully'], 200);
     }
 }
