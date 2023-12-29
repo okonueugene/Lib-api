@@ -36,7 +36,7 @@ class UserController extends Controller
         $user = User::create($request->validated());
 
         //assign role
-        $user->assignRole('user');
+        $user->assignRole($request->role);
 
         return UserResource::make($user);
 
