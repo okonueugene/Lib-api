@@ -258,7 +258,7 @@ class BookLoanController extends Controller
 
     public function getReturnedBookLoans()
     {
-        return BookLoansResource::collection(BookLoans::where('status', 'returned')->get());
+        return BookLoansResource::collection(BookLoans::where('return_date', '!=', null)->get());
     }
 
     public function getExtendedBookLoans()
