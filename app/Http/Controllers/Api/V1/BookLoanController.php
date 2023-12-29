@@ -16,7 +16,6 @@ class BookLoanController extends Controller
      */
     public function index()
     {
-        // Assuming you have a BookLoansResource for formatting the response
         return BookLoansResource::collection(BookLoans::all());
     }
 
@@ -75,6 +74,13 @@ class BookLoanController extends Controller
         }
     }
 
+    // /**
+    //  * Display the specified book loan.
+    //  */
+    // public function show(BookLoans $bookLoan)
+    // {
+    //     return BookLoansResource::make($bookLoan);
+    // }
 
 
     /**
@@ -233,5 +239,45 @@ class BookLoanController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
 
+    }
+
+    public function getApprovedBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('status', 'approved')->get());
+    }
+
+    public function getPendingBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('status', 'pending')->get());
+    }
+
+    public function getRejectedBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('status', 'rejected')->get());
+    }
+
+    public function getReturnedBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('status', 'returned')->get());
+    }
+
+    public function getExtendedBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('extended', 'yes')->get());
+    }
+
+    public function getOverdueBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('due_date', '<', now())->get());
+    }
+
+    public function getUnpaidBookLoans()
+    {
+        return BookLoansResource::collection(BookLoans::where('penalty_status', 'unpaid')->get());
+    }
+
+    public function getUserBookLoans($user)
+    {
+        return BookLoansResource::collection(BookLoans::where('user_id', $user)->get());
     }
 }

@@ -42,6 +42,13 @@ Route::prefix('/v1')->group(
             Route::post('/bookloans/approve/{id}', [BookLoanController::class, 'approveBookLoan']);
             Route::post('/bookloans/reject/{id}', [BookLoanController::class, 'rejectBookLoan']);
             Route::post('/bookloans/extend/{id}', [BookLoanController::class, 'extendBookLoan']);
+            Route::get('/bookloans/approved/loans', [BookLoanController::class, 'getApprovedBookLoans']);
+            Route::get('/bookloans/pending/loans', [BookLoanController::class, 'getPendingBookLoans']);
+            Route::get('/bookloans/rejected/loans', [BookLoanController::class, 'getRejectedBookLoans']);
+            Route::get('/bookloans/extended/loans', [BookLoanController::class, 'getExtendedBookLoans']);
+            Route::get('/bookloans/returned/loans', [BookLoanController::class, 'getReturnedBookLoans']);
+            Route::get('/bookloans/user/loans/{id}', [BookLoanController::class, 'getUserBookLoans']);
+            Route::get('/bookloans/overdue/loans', [BookLoanController::class, 'getOverdueBookLoans']);
 
         });
     }
