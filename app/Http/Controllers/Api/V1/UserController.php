@@ -34,9 +34,10 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
 
-        $user = User::create($request->validated());
+        $user = new User($request->validated());
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-        //assign role
         $user->assignRole($request->role);
 
         return UserResource::make($user);
