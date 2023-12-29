@@ -16,6 +16,7 @@ class UserController extends Controller
     {
         $this->middleware('permission:add_users')->only(['store']);
         $this->middleware('permission:edit_users')->only(['update']);
+        $this->middleware('permission:view_users')->only(['index', 'show']);
         $this->middleware('permission:delete_users')->only(['destroy']);
     }
     /**
