@@ -86,7 +86,7 @@ class BookLoanController extends Controller
     /**
      * Remove the specified book loan from storage.
      */
-    public function destroy(BookLoan $bookLoan)
+    public function destroy(BookLoans $bookLoan)
     {
         try {
             \DB::beginTransaction();
