@@ -30,8 +30,8 @@ return new class () extends Migration {
                 ->nullable();
             $table->string('penalty_status', 15)->default('unpaid');
             $table->string('status')->default('pending');
-            $table->unsignedBigInteger('added_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->foreignId('added_by')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
