@@ -23,12 +23,12 @@ class Books extends Model implements HasMedia
     }
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function subCategory()
     {
-        return $this->belongsTo(SubCategory::class);
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
 
     public function addedBy()
@@ -38,12 +38,12 @@ class Books extends Model implements HasMedia
 
     public function copies()
     {
-        return $this->hasMany(BookCopy::class);
+        return $this->hasMany(BookCopy::class, 'book_id');
     }
 
     public function bookLoans()
     {
-        return $this->hasOne(BookLoans::class);
+        return $this->hasManyThrough(BookLoans::class, BookCopy::class, 'book_id', 'book_copy_id');
     }
 
     protected static function boot()

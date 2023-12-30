@@ -49,7 +49,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function addedBooks()
+    public function addedBy()
     {
         return $this->hasMany(Books::class, 'added_by');
     }
@@ -64,7 +64,7 @@ class User extends Authenticatable
         parent::boot();
 
         static::deleting(function ($user) {
-            $user->addedBooks()->delete();
+            $user->addedBy()->delete();
             $user->bookLoans()->delete();
         });
     }

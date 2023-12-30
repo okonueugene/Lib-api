@@ -18,12 +18,12 @@ class Category extends Model
 
     public function subcategories()
     {
-        return $this->hasMany(SubCategory::class);
+        return $this->hasMany(SubCategory::class, 'category_id');
     }
 
     public function books()
     {
-        return $this->hasManyThrough(Books::class, SubCategory::class);
+        return $this->hasManyThrough(Books::class, SubCategory::class, 'category_id', 'sub_category_id');
     }
     protected static function boot()
     {

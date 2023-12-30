@@ -19,12 +19,12 @@ class SubCategory extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function books()
     {
-        return $this->hasMany(Books::class);
+        return $this->hasMany(Books::class, 'sub_category_id');
     }
     protected static function boot()
     {
