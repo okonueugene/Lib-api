@@ -26,4 +26,12 @@ class SubCategory extends Model
     {
         return $this->hasMany(Books::class);
     }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($subCategory) {
+            $subCategory->books()->delete();
+        });
+    }
 }

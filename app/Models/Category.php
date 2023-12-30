@@ -25,7 +25,15 @@ class Category extends Model
     {
         return $this->hasManyThrough(Books::class, SubCategory::class);
     }
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::deleting(function ($category) {
+            $category->subcategories()->delete();
+            $category->books()->delete();
+        });
+    }
 
 
 }

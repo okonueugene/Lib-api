@@ -52,6 +52,7 @@ class Books extends Model implements HasMedia
 
         static::deleting(function ($book) {
             $book->copies()->delete();
+            $book->bookLoans()->delete();
         });
     }
 }
