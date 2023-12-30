@@ -32,6 +32,7 @@ return new class () extends Migration {
             $table->string('status')->default('pending');
             $table->foreignId('added_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
