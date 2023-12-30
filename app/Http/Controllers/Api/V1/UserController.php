@@ -82,4 +82,27 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
+
+    public function registerUnAuthenticatedUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required',
+            'password_confirmation' => 'required|same:password',
+        ]);
+
+        try {
+            $user = new User($request->all());
+            $user->password = Hash::make($request->password);
+            $user->save();
+            //assign user role
+            $user->assignRole('user');
+
+            return response()->json(['message' => 'User created successfully'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }

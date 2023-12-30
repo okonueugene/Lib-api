@@ -37,6 +37,7 @@ Route::prefix('/v1')->group(
             Route::apiResource('/bookloans', BookLoanController::class);
             Route::apiResource('/permissions', PermissionsController::class);
 
+            Route::post('/users/register', [UserController::class, 'registerUnAuthenticatedUser']);
             Route::get('/books/search/{title} ', [BooksController::class, 'search']);
             Route::post('/bookloans/return/{id}', [BookLoanController::class, 'returnBook']);
             Route::post('/bookloans/approve/{id}', [BookLoanController::class, 'approveBookLoan']);
