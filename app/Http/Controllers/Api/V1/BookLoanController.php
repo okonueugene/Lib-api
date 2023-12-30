@@ -86,10 +86,13 @@ class BookLoanController extends Controller
     /**
      * Remove the specified book loan from storage.
      */
-    public function destroy(BookLoans $bookLoan)
+    public function destroy($bookLoan)
     {
         try {
             \DB::beginTransaction();
+
+            // Find the book loan by ID
+            $bookLoan = BookLoans::findOrFail($bookLoan);
 
             // Mark the book copy as available before deleting the loan
             $bookLoan->bookCopy->update(['is_available' => true]);
