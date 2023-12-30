@@ -43,7 +43,7 @@ class Books extends Model implements HasMedia
 
     public function bookLoans()
     {
-        return $this->hasOne(BookLoan::class);
+        return $this->hasOne(BookLoans::class);
     }
 
     protected static function boot()
