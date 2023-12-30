@@ -89,7 +89,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|unique:users',
             'password' => 'required',
-            'password_confirmation' => 'required|same:password',
+            'password_confirmed' => 'required|same:password',
         ]);
 
         try {

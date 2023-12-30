@@ -26,6 +26,8 @@ use App\Http\Controllers\Api\V1\AuthenticationController;
 Route::prefix('/v1')->group(
     function () {
         Route::post('/login', [AuthenticationController::class, 'login']);
+        Route::post('/users/register', [UserController::class, 'registerUnAuthenticatedUser']);
+
         Route::group(['middleware' => ['auth:sanctum','ensure.json.header']], function () {
             Route::post('/logout', [AuthenticationController::class, 'logout']);
 
@@ -37,7 +39,6 @@ Route::prefix('/v1')->group(
             Route::apiResource('/bookloans', BookLoanController::class);
             Route::apiResource('/permissions', PermissionsController::class);
 
-            Route::post('/users/register', [UserController::class, 'registerUnAuthenticatedUser']);
             Route::get('/books/search/{title} ', [BooksController::class, 'search']);
             Route::post('/bookloans/return/{id}', [BookLoanController::class, 'returnBook']);
             Route::post('/bookloans/approve/{id}', [BookLoanController::class, 'approveBookLoan']);
