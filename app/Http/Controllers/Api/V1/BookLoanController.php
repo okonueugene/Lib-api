@@ -98,8 +98,8 @@ class BookLoanController extends Controller
                 return response()->json(['message' => 'Book loan not found'], 404);
             }
 
-            if ($bookLoan->status !== 'pending') {
-                return response()->json(['message' => 'Book loan cannot be deleted'], 400);
+            if ($bookLoan->status == 'pending') {
+                return response()->json(['message' => 'Book loan cannot be deleted as its pending'], 400);
             }
 
 
