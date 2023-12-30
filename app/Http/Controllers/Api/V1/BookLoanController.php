@@ -187,7 +187,6 @@ class BookLoanController extends Controller
     /**
      * Reject a book loan.
      */
-
     public function rejectBookLoan($bookLoan)
     {
         // Check if the user is an admin
@@ -197,13 +196,17 @@ class BookLoanController extends Controller
 
         try {
             \DB::beginTransaction();
-            $bookLoan = BookLoans::findOrfail($bookLoan);
 
-            if ($bookLoan->status != 'pending') {
+            // Find the book loan by ID
+            $bookLoan = BookLoans::findOrFail($bookLoan);
+
+            // Check if the book loan is pending
+            if ($bookLoan->status !== 'pending') {
                 return response()->json(['message' => 'Book loan cannot be rejected'], 400);
             }
+
             // Update the book loan status
-            $bookLoan->update(['status' => 'rejected','updated_at' => now(), 'updated_by' => auth()->id()]);
+            $bookLoan->update(['status' => 'rejected', 'updated_at' => now(), 'updated_by' => auth()->id()]);
 
             \DB::commit();
 
@@ -213,8 +216,8 @@ class BookLoanController extends Controller
             \DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-
     }
+
 
     /**
      * Return a book loan.
