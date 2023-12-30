@@ -56,7 +56,7 @@ class User extends Authenticatable
 
     public function bookLoans()
     {
-        return $this->hasMany(BookLoans::class);
+        return $this->hasMany(BookLoan::class);
     }
 
     protected static function boot()

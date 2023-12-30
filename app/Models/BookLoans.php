@@ -31,5 +31,4 @@ class BookLoans extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
-
 }

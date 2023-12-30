@@ -17,12 +17,12 @@ class BookCopy extends Model
 
     public function book()
     {
-        return $this->belongsTo(Book::class);
+        return $this->belongsTo(Books::class);
     }
 
     public function bookLoans()
     {
-        return $this->hasMany(BookLoans::class);
+        return $this->hasMany(BookLoans::class, 'book_id');
     }
 
 

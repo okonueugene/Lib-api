@@ -43,7 +43,7 @@ class Books extends Model implements HasMedia
 
     public function bookLoans()
     {
-        return $this->hasOne(BookLoans::class);
+        return $this->hasOne(BookLoan::class);
     }
 
     protected static function boot()
@@ -52,7 +52,6 @@ class Books extends Model implements HasMedia
 
         static::deleting(function ($book) {
             $book->copies()->delete();
-            $book->bookLoans()->delete();
         });
     }
 }
