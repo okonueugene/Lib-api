@@ -94,9 +94,21 @@ class BookLoanController extends Controller
             // Find the book loan by ID
             $bookLoan = BookLoans::findOrFail($bookLoan);
 
-            // Mark the book copy as available before deleting the loan
-            $bookLoan->bookCopy->update(['is_available' => true]);
+            if(!$bookLoan) {
+                return response()->json(['message' => 'Book loan not found'], 404);
+            }
 
+            if ($bookLoan->status !== 'pending') {
+                return response()->json(['message' => 'Book loan cannot be deleted'], 400);
+            }
+
+
+            // Mark the book copy as available before deleting the loan
+            $bookCopy = BookCopy::where('book_id', $bookLoan->book_id)->first();
+            $bookCopy->increment('copy_number');
+            $bookCopy->update(['is_available' => true]);
+
+            // Delete the book loan
             $bookLoan->delete();
 
             \DB::commit();
