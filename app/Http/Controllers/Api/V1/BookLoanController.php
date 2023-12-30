@@ -123,7 +123,7 @@ class BookLoanController extends Controller
     /**
      * Calculate penalty amount if the book is returned late.
      */
-    private function calculatePenalty(BookLoan $bookLoan)
+    private function calculatePenalty(BookLoans $bookLoan)
     {
         //50 per day after due date
         $penaltyAmount = 0;
