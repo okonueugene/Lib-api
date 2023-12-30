@@ -222,20 +222,24 @@ class BookLoanController extends Controller
 
     public function returnBook($bookLoan)
     {
-        $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->where('return_date', null)->first();
-        //if the book is not approved or not returned
-        if (!$bookLoan) {
-            return response()->json(['message' => 'Book loan not approved or has already been returned'], 400);
-        }
-
         try {
             \DB::beginTransaction();
+
+            // Find the book loan by ID
+            $bookLoan = BookLoans::findOrFail($bookLoan);
+
+            // Check if the book is approved and not returned
+            if ($bookLoan->status !== 'approved' || $bookLoan->return_date !== null) {
+                return response()->json(['message' => 'Book loan not approved or has already been returned'], 400);
+            }
+
             // Update the book loan status
-            $bookLoan->update(['status' => 'returned','updated_at' => now(), 'updated_by' => auth()->id(), 'return_date' => now()]);
-            //Increment the copy_number
+            $bookLoan->update(['status' => 'returned', 'updated_at' => now(), 'updated_by' => auth()->id(), 'return_date' => now()]);
+
+            // Increment the copy_number
             $bookCopy = BookCopy::where('book_id', $bookLoan->book_id)->first();
-            return response()->json(['message' => $bookCopy]);
-            // $bookCopy->increment('copy_number');
+            $bookCopy->increment('copy_number');
+
             \DB::commit();
 
             return response()->json(['message' => 'Book loan returned successfully']);
@@ -244,8 +248,8 @@ class BookLoanController extends Controller
             \DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-
     }
+
 
     public function getApprovedBookLoans()
     {
