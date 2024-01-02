@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 class RolesController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('permission:view_roles');
-    //     $this->middleware('permission:add_roles');
-    //     $this->middleware('permission:edit_roles');
-    //     $this->middleware('permission:delete_roles');
-    // }
+    public function __construct()
+    {
+        $this->middleware('permission:view_role');
+        $this->middleware('permission:add_role');
+        $this->middleware('permission:edit_role');
+        $this->middleware('permission:delete_role');
+    }
     public function index()
     {
         $roles = \Spatie\Permission\Models\Role::all();
