@@ -177,9 +177,15 @@ class BookLoanController extends Controller
     public function extendBookLoan($bookLoan)
     {
         // Check if the book loan exists and is approved
-        $bookLoan = BookLoans::findOrfail($bookLoan)->where('status', 'approved')->where('extended', 'no')->first();
-        if (!$bookLoan) {
-            return response()->json(['message' => 'Book loan not approved or has been returned'], 400);
+        $bookLoan = BookLoans::findOrFail($bookLoan);
+        if ($bookLoan->status !== 'approved') {
+            return response()->json(['message' => 'Book loan not approved'], 400);
+        } elseif($bookLoan->return_date !== null) {
+            return response()->json(['message' => 'Book loan has been returned'], 400);
+        } elseif($bookLoan->extended == 'yes') {
+            return response()->json(['message' => 'Book loan has been extended'], 400);
+        } elseif($bookLoan->due_date < now()) {
+            return response()->json(['message' => 'Book loan has been overdue'], 400);
         }
 
         try {
