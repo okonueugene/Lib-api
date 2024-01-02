@@ -150,7 +150,7 @@ class BookLoanController extends Controller
 
         try {
             \DB::beginTransaction();
-            $bookLoan = BookLoans::findOrfail($bookLoan);
+            $bookLoan = BookLoans::findOrFail($bookLoan);
 
             if ($bookLoan->status != 'pending') {
                 return response()->json(['message' => 'Book loan cannot be approved'], 400);
@@ -223,7 +223,7 @@ class BookLoanController extends Controller
 
             // Check if the book loan is pending
             if ($bookLoan->status !== 'pending') {
-                return response()->json(['message' => 'Book loan cannot be rejected'], 400);
+                return response()->json(['message' => 'Book loan cannot be rejected since it is ' . $bookLoan->status], 400);
             }
 
             // Update the book loan status
